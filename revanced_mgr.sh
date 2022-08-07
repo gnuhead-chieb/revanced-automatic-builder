@@ -80,7 +80,7 @@ java -jar cli-* -b patches-* -m integrations-* -a ${apps[$menuinput]}-orig.apk -
 mv ${apps[$menuinput]}-patched.apk $pwd
 
 #Install apk if script running on Termux
-[[ $(uname -a | awk '{print $NF}')="Android" ]] && {
+[[ $(uname -a | awk '{print $NF}') = "Android" ]] && {
     mv $pwd/${apps[$menuinput]}-patched.apk /sdcard/
     echo "Your patched apk was saved in \"/storage/emulated/0/\""
     echo "Do you want install patched apk?(y/n)"
