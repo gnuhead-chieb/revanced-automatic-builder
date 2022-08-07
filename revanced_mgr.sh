@@ -78,3 +78,19 @@ ver=$(getappver ${apps[$menuinput]})
 wget $(eval curl -s "\${${apps[$menuinput]}[2]}/download/${req}" | grep -oPm1 "(?<=href=\")https://download.apkcombo.com/.*?(?=\")")\&$(curl -s "https://apkcombo.com/checkin") -O ${apps[$menuinput]}-orig.apk
 java -jar cli-* -b patches-* -m integrations-* -a ${apps[$menuinput]}-orig.apk -c -o ${apps[$menuinput]}-patched.apk
 mv ${apps[$menuinput]}-patched.apk $pwd
+
+#Install apk if script running on Termux
+[[ $(uname -a | awk '{print $NF}')="Android" ]] && {
+    mv $pwd/${apps[$menuinput]}-patched.apk /sdcard/
+    echo "Your patched apk was saved in \"/storage/emulated/0/\""
+    echo "Do you want install patched apk?(y/n)"
+    while true
+    do
+        echo -n ">"
+        read isinstall
+        case "$isinstall" in
+            [yY]es | [yY] ) { termux-open /sdcard/${apps[$menuinput]}-patched.apk; break; } ;;
+            [nN]o | [nN] ) break ;;
+        esac
+    done
+}
