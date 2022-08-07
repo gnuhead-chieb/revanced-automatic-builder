@@ -7,6 +7,6 @@ It works on termux.
 
 ## Dependencies(Debian/Ubuntu/Termux)
 ```shell
-$ apt install grep awk jq curl wget openjdk-17
+$ apt install wget openjdk-17
 $ termux-setup-storage #Termux only!
 ```
