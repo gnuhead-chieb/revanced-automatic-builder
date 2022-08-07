@@ -5,8 +5,12 @@ It works on termux.
 
 ![Screenshot_20220808_051411](https://user-images.githubusercontent.com/41156994/183309460-76a3b7bd-2fea-4195-8ad9-e58c77eeb9ce.png)
 
-## Dependencies(Debian/Ubuntu/Termux)
+## Setup(Debian/Ubuntu/Termux)
 ```shell
-$ apt install wget openjdk-17
+$ apt update && apt upgrade
+$ apt install wget openjdk-17 openssl jq
 $ termux-setup-storage #Termux only!
+$ wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/revanced_mgr.sh
+$ chmod +x revanced_mgr.sh
+$ ./revanced_mgr.sh
 ```
