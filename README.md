@@ -1,7 +1,7 @@
 # revanced-automatic-builder
 Bash script that builds Revanced(All apps!) automaticaly. Just run script!
 
-It works on termux.
+It also works on termux.This script is not depend with other project,pure bash script.works without nodejs.
 
 ![Screenshot_20220808_051411](https://user-images.githubusercontent.com/41156994/183309460-76a3b7bd-2fea-4195-8ad9-e58c77eeb9ce.png)
 
