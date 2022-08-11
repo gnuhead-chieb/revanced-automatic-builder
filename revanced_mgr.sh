@@ -40,6 +40,7 @@ warnwetter=(
 )
 pwd=$(pwd)
 mkdir ~/.revanced &>/dev/null; cd ~/.revanced
+[[ $(uname -a | awk '{print $NF}') = "Android" ]] && isDroid=true
 function getappver(){
     [[ -z $verlist ]] && verlist=$(java -jar cli-* -c -b patches-* -m integrations-* -a- -o- -l --with-versions --with-packages)
     local ver=$(eval grep -m1 \$\{$1[1]\}<<<"$verlist" | awk '{print $NF}')
@@ -54,6 +55,7 @@ do
     download=$(eval curl -s '$'${pkg}_api  | jq -r ".assets[-1].browser_download_url")
     ls $pkg-$ver &>/dev/null && echo ${pkg^}:updated! || { rm -f $pkg-*; wget "$download" -c -t 15 -O $pkg-$ver; }
 done
+$isDroid && [[ ! -e aapt2 ]] && wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/aapt2/$(getprop ro.product.cpu.abi)/aapt2
 
 #List patch available app versions
 {
@@ -76,11 +78,11 @@ rm -f ${apps[$menuinput]}-orig.apk &>/dev/null
 ver=$(getappver ${apps[$menuinput]})
 [[ "$ver" = "all" ]] && req="apk" || req="phone-${ver}-apk"
 wget $(eval curl -s "\${${apps[$menuinput]}[2]}/download/${req}" | grep -oPm1 "(?<=href=\")https://download.apkcombo.com/.*?(?=\")")\&$(curl -s "https://apkcombo.com/checkin") -O ${apps[$menuinput]}-orig.apk
-java -jar cli-* -b patches-* -m integrations-* -a ${apps[$menuinput]}-orig.apk -c -o ${apps[$menuinput]}-patched.apk
+java -jar cli-* -b patches-* -m integrations-* -a ${apps[$menuinput]}-orig.apk -c -o ${apps[$menuinput]}-patched.apk $($isDroid && echo "--custom-aapt2-binary ./aapt2")
 mv ${apps[$menuinput]}-patched.apk $pwd
 
 #Install apk if script running on Termux
-[[ $(uname -a | awk '{print $NF}') = "Android" ]] && {
+$isDroid && {
     mv $pwd/${apps[$menuinput]}-patched.apk /sdcard/
     echo "Your patched apk was saved in \"/storage/emulated/0/\""
     echo "Do you want install patched apk?(y/n)"
