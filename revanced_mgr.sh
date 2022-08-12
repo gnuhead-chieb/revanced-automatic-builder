@@ -1,9 +1,7 @@
 #!/bin/bash
 <<'////'
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
 You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 ////
 
@@ -40,7 +38,7 @@ warnwetter=(
 )
 pwd=$(pwd)
 mkdir ~/.revanced &>/dev/null; cd ~/.revanced
-[[ $(uname -a | awk '{print $NF}') = "Android" ]] && isDroid=true
+[[ $(uname -a | awk '{print $NF}') = "Android" ]] && isDroid=true || isDroid=false
 function getappver(){
     [[ -z $verlist ]] && verlist=$(java -jar cli-* -c -b patches-* -m integrations-* -a- -o- -l --with-versions --with-packages)
     local ver=$(eval grep -m1 \$\{$1[1]\}<<<"$verlist" | awk '{print $NF}')
@@ -55,7 +53,7 @@ do
     download=$(eval curl -s '$'${pkg}_api  | jq -r ".assets[-1].browser_download_url")
     ls $pkg-$ver &>/dev/null && echo ${pkg^}:updated! || { rm -f $pkg-*; wget "$download" -c -t 15 -O $pkg-$ver; }
 done
-$isDroid && [[ ! -e aapt2 ]] && wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/aapt2/$(getprop ro.product.cpu.abi)/aapt2
+$isDroid && [[ ! -e aapt2 ]] && wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/$(getprop ro.product.cpu.abi)/aapt2
 
 #List patch available app versions
 {
@@ -68,31 +66,51 @@ done; }|column -t -s,
 
 while true
 do
-    echo -n ">"
-    read menuinput
-    [[ $menuinput -ge 0 ]] && [[ $menuinput -lt ${#apps[@]} ]] && break
+    read -p ">" menuinput
+    chk=0
+    for i in $menuinput
+    do
+        { [[ $i =~ ^[0-9]+$ ]] && [[ $i -ge 0 ]] && [[ $i -lt ${#apps[@]} ]]; } || chk=1
+    done
+    [[ $chk = 0 ]] && break
 done
 
 #Download required apk from APKCombo and patch
-rm -f ${apps[$menuinput]}-orig.apk &>/dev/null
-ver=$(getappver ${apps[$menuinput]})
-[[ "$ver" = "all" ]] && req="apk" || req="phone-${ver}-apk"
-wget $(eval curl -s "\${${apps[$menuinput]}[2]}/download/${req}" | grep -oPm1 "(?<=href=\")https://download.apkcombo.com/.*?(?=\")")\&$(curl -s "https://apkcombo.com/checkin") -O ${apps[$menuinput]}-orig.apk
-java -jar cli-* -b patches-* -m integrations-* -a ${apps[$menuinput]}-orig.apk -c -o ${apps[$menuinput]}-patched.apk $($isDroid && echo "--custom-aapt2-binary ./aapt2")
-mv ${apps[$menuinput]}-patched.apk $pwd
+for i in $menuinput
+do
+    rm -f ${apps[$i]}-orig.apk &>/dev/null
+    ver=$(getappver ${apps[$i]})
+    [[ "$ver" = "all" ]] && req="apk" || req="phone-${ver}-apk"
+    wget $(eval curl -s "\${${apps[$i]}[2]}/download/${req}" | grep -oPm1 "(?<=href=\")https://download.apkcombo.com/.*?(?=\")")\&$(curl -s "https://apkcombo.com/checkin") -O ${apps[$i]}-orig.apk
+    java -jar cli-* -b patches-* -m integrations-* -a ${apps[$i]}-orig.apk -c -o ${apps[$i]}-patched.apk $($isDroid && echo "--custom-aapt2-binary ./aapt2")
+    mv ${apps[$i]}-patched.apk $pwd
+done
 
-#Install apk if script running on Termux
-$isDroid && {
-    mv $pwd/${apps[$menuinput]}-patched.apk /sdcard/
-    echo "Your patched apk was saved in \"/storage/emulated/0/\""
-    echo "Do you want install patched apk?(y/n)"
-    while true
-    do
-        echo -n ">"
-        read isinstall
-        case "$isinstall" in
-            [yY]es | [yY] ) { termux-open /sdcard/${apps[$menuinput]}-patched.apk; break; } ;;
-            [nN]o | [nN] ) break ;;
-        esac
-    done
-}
+#Install apk by Termux or ADB
+for i in $menuinput
+do
+    $isDroid && {
+        mv $pwd/${apps[$i]}-patched.apk /sdcard/
+        grep -P "^allow-external-apps *= *true$" ~/.termux/termux.properties >/dev/null || echo "allow-external-apps = true" >>~/.termux/termux.properties
+        echo "Your patched apk was saved in \"/storage/emulated/0/\""
+        echo "Do you want install patched apk?(y/n)"
+        while true
+        do
+            read -p ">" isinstall
+            case "$isinstall" in
+                [yY]es | [yY] ) { termux-open /sdcard/${apps[$i]}-patched.apk; break; } ;;
+                [nN]o | [nN] ) break ;;
+            esac
+        done
+    } || {
+        echo "Do you want install patched apk by ADB?(y/n)"
+        while true
+        do
+            read -p ">" isinstall
+            case "$isinstall" in
+                [yY]es | [yY] ) { adb install $pwd/${apps[$i]}-patched.apk; break; } ;;
+                [nN]o | [nN] ) break ;;
+            esac
+        done
+    }
+done
