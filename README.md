@@ -7,12 +7,8 @@ It also works on termux.This script is not depend with other project,pure bash s
 <img src="https://user-images.githubusercontent.com/41156994/183309460-76a3b7bd-2fea-4195-8ad9-e58c77eeb9ce.png" width="50%" height="50%" align="center"/>
 </div>
 
-## Setup(Debian/Ubuntu/Termux)
+## Get Started
 ```shell
-$ apt update && apt upgrade
-$ apt install wget openjdk-17 openssl jq
-$ termux-setup-storage #Termux only!
-$ wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/revanced_mgr.sh
-$ chmod +x revanced_mgr.sh
-$ ./revanced_mgr.sh
+curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/installer.sh | bash
+revanced
 ```
