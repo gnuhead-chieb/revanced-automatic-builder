@@ -9,7 +9,7 @@ cli_api="https://api.github.com/repos/revanced/revanced-cli/releases/latest"
 patches_api="https://api.github.com/repos/revanced/revanced-patches/releases/latest"
 integrations_api="https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
 
-apps=("youtube" "music" "twitter" "reddit" "warnwetter")
+apps=("youtube" "music" "twitter" "reddit" "warnwetter" "ecmwf" "tiktoka" "tiktokg")
 
 youtube=(
     "Youtube"
@@ -35,6 +35,21 @@ warnwetter=(
     "WarnWetter"
     "warnapp"
     "https://apkcombo.com/warnwetter/de.dwd.warnapp"
+)
+ecmwf=(
+    "Pflotsh ECMWF"
+    "ecmwf_a"
+    "https://apkcombo.com/pflotsh-ecmwf/com.garzotto.pflotsh.ecmwf_a"
+)
+tiktoka=(
+    "TikTok(Asia)"
+    "trill"
+    "https://apkcombo.com/tiktok-asia/com.ss.android.ugc.trill"
+)
+tiktokg=(
+    "Tiktok(Global)"
+    "musically"
+    "https://apkcombo.com/tiktok/com.zhiliaoapp.musically"
 )
 pwd=$(pwd)
 mkdir ~/.revanced &>/dev/null; cd ~/.revanced
