@@ -21,3 +21,12 @@ revanced
 Pull requests are welcome. If you implement a feature or fix a bug on the [issue page](https://github.com/gnuhead-chieb/revanced-automatic-builder/issues), please contribute to this project.
 If the issue you want to work on is not on the issue page, please be sure to start an issue thread first. However, this is not necessary for minor modifications such as typo corrections.
 Before starting work, please check the [development note](https://github.com/gnuhead-chieb/revanced-automatic-builder/blob/main/HACKING.md) to see how this script works and the coding specifications
+
+## Features
+
+* Download and patch apk
+* Multiple apps support
+* Termux support
+* Bulk instalation
+* Install directry by ADB/System installer
+* Pure bash script No bloat dependencies
