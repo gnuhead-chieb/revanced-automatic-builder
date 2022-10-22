@@ -9,7 +9,7 @@ cli_api="https://api.github.com/repos/revanced/revanced-cli/releases/latest"
 patches_api="https://api.github.com/repos/revanced/revanced-patches/releases/latest"
 integrations_api="https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
 
-apps=("youtube" "music" "twitter" "reddit" "warnwetter" "ecmwf" "tiktoka" "tiktokg")
+apps=("youtube" "music" "twitter" "reddit" "warnwetter" "ecmwf" "tiktoka" "tiktokg" "spotify")
 
 youtube=(
     "Youtube"
@@ -51,13 +51,18 @@ tiktokg=(
     "musically"
     "https://apkcombo.com/tiktok/com.zhiliaoapp.musically"
 )
+spotify=(
+    "Spotify"
+    "spotify"
+    "https://apkcombo.com/spotify/com.spotify.music/"
+)
 pwd=$(pwd)
 mkdir ~/.revanced &>/dev/null; cd ~/.revanced
 [[ $(uname -a | awk '{print $NF}') = "Android" ]] && isDroid=true || isDroid=false
 function getappver(){
     [[ -z $verlist ]] && verlist=$(java -jar cli-* -c -b patches-* -m integrations-* -a- -o- -l --with-versions --with-packages)
-    local ver=$(eval grep -m1 \$\{$1[1]\}<<<"$verlist" | awk '{print $NF}')
-    grep -P "[^0-9\.]+"<<<$ver >/dev/null && ver="all"
+    local ver=$(eval grep \$\{$1[1]\}<<<"$verlist" | awk '{print $NF}' | grep -vP "[^0-9\.]+" | awk '{if(m<$NF) m=$NF} END{print m}')
+    [[ -n "$ver" ]] || ver="all"
     echo $ver
 }
 
@@ -97,7 +102,7 @@ do
     ver=$(getappver ${apps[$i]})
     [[ "$ver" = "all" ]] && req="apk" || req="phone-${ver}-apk"
     wget $(eval curl -s "\${${apps[$i]}[2]}/download/${req}" | grep -oPm1 "(?<=href=\")https://download.apkcombo.com/.*?(?=\")")\&$(curl -s "https://apkcombo.com/checkin") -O ${apps[$i]}-orig.apk
-    java -jar cli-* -b patches-* -m integrations-* -a ${apps[$i]}-orig.apk -c -o ${apps[$i]}-patched.apk $($isDroid && echo "--custom-aapt2-binary ./aapt2")
+    java -jar cli-* -b patches-* -m integrations-* -a ${apps[$i]}-orig.apk -c -o ${apps[$i]}-patched.apk --experimental $($isDroid && echo "--custom-aapt2-binary ./aapt2")
     mv ${apps[$i]}-patched.apk $pwd
 done
 

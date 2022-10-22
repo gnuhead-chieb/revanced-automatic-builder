@@ -9,17 +9,22 @@ It also works on termux.This script is not depend with other project,pure bash s
 <img src="https://user-images.githubusercontent.com/41156994/183309460-76a3b7bd-2fea-4195-8ad9-e58c77eeb9ce.png" width="50%" height="50%" align="center"/>
 </div>
 
-## Get Started
+## Get Started/Updating script
 
 ```shell
 curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/installer.sh | bash
 revanced
 ```
+You can copy this install snippet on your phone by scanning this QR code.
+
+<img src="https://github.com/gnuhead-chieb/revanced-automatic-builder/blob/aapt2/revanced_qr.png?raw=true"/>
 
 ## Contribution
 
 Pull requests are welcome. If you implement a feature or fix a bug on the [issue page](https://github.com/gnuhead-chieb/revanced-automatic-builder/issues), please contribute to this project.
+
 If the issue you want to work on is not on the issue page, please be sure to start an issue thread first. However, this is not necessary for minor modifications such as typo corrections.
+
 Before starting work, please check the [development note](https://github.com/gnuhead-chieb/revanced-automatic-builder/blob/main/HACKING.md) to see how this script works and the coding specifications
 
 ## Features
@@ -30,3 +35,4 @@ Before starting work, please check the [development note](https://github.com/gnu
 * Bulk instalation
 * Install directry by ADB/System installer
 * Pure bash script No bloat dependencies
+* Automatic version detection
