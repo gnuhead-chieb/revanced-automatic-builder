@@ -8,6 +8,7 @@ You should have received a copy of the GNU General Public License along with thi
 cli_api="https://api.github.com/repos/revanced/revanced-cli/releases/latest"
 patches_api="https://api.github.com/repos/revanced/revanced-patches/releases/latest"
 integrations_api="https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
+vc=1
 
 apps=("youtube" "music" "twitter" "reddit" "warnwetter" "ecmwf" "tiktoka" "tiktokg" "spotify")
 
@@ -60,7 +61,6 @@ pwd=$(pwd)
 mkdir ~/.revanced &>/dev/null; cd ~/.revanced
 [[ $(uname -a | awk '{print $NF}') = "Android" ]] && isDroid=true || isDroid=false
 function getappver(){
-    [[ -z $verlist ]] && verlist=$(java -jar cli-* -c -b patches-* -m integrations-* -a- -o- -l --with-versions --with-packages)
     local ver=$(eval grep \$\{$1[1]\}<<<"$verlist" | awk '{print $NF}' | grep -vP "[^0-9\.]+" | awk '{if(m<$NF) m=$NF} END{print m}')
     [[ -n "$ver" ]] || ver="all"
     echo $ver
@@ -74,7 +74,9 @@ do
     ls $pkg-$ver &>/dev/null && echo ${pkg^}:updated! || { rm -f $pkg-*; wget "$download" -c -t 15 -O $pkg-$ver; }
 done
 $isDroid && [[ ! -e aapt2 ]] && wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/$(getprop ro.product.cpu.abi)/aapt2
+[[ $(curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/vc) -gt $vc ]] && curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/installer.sh | bash
 
+verlist=$(java -jar cli-* -c -b patches-* -m integrations-* -a- -o- -l --with-versions --with-packages)
 #List patch available app versions
 {
 opt=0
