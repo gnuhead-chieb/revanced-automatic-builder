@@ -76,6 +76,13 @@ done
 $isDroid && [[ ! -e aapt2 ]] && wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/$(getprop ro.product.cpu.abi)/aapt2
 [[ $(curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/vc) -gt $vc ]] && curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/installer.sh | bash
 
+exclude=""
+if [ $# -eq 2 ]; then
+    if [ "$1" == "--exclude" ] || [ "$1" == "-e" ]; then
+        excludes=$2
+        exclude=" -e ${excludes//,/ -e }"
+    fi
+fi
 verlist=$(java -jar cli-* -c -b patches-* -m integrations-* -a- -o- -l --with-versions --with-packages)
 #List patch available app versions
 {
@@ -104,7 +111,7 @@ do
     ver=$(getappver ${apps[$i]})
     [[ "$ver" = "all" ]] && req="apk" || req="phone-${ver}-apk"
     wget $(eval curl -s "\${${apps[$i]}[2]}/download/${req}" | grep -oPm1 "(?<=href=\")https://download.apkcombo.com/.*?(?=\")")\&$(curl -s "https://apkcombo.com/checkin") -O ${apps[$i]}-orig.apk
-    java -jar cli-* -b patches-* -m integrations-* -a ${apps[$i]}-orig.apk -c -o ${apps[$i]}-patched.apk --experimental $($isDroid && echo "--custom-aapt2-binary ./aapt2")
+    java -jar cli-* -b patches-* -m integrations-*$exclude -a ${apps[$i]}-orig.apk -c -o ${apps[$i]}-patched.apk --experimental $($isDroid && echo "--custom-aapt2-binary ./aapt2")
     mv ${apps[$i]}-patched.apk $pwd
 done
 
