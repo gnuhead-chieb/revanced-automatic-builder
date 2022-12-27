@@ -142,7 +142,7 @@ do
     rm -f ${apps[$i]}-orig.apk &>/dev/null
     ver=$(getappver ${apps[$i]})
     [[ "$ver" = "all" ]] && req="apk" || req="phone-${ver}-apk"
-    wget $(eval curl -s "\${${apps[$i]}[2]}/download/${req}" | grep -oPm1 "(?<=href=\")https://download.apkcombo.com/.*?(?=\")")\&$(curl -s "https://apkcombo.com/checkin") -O ${apps[$i]}-orig.apk
+    wget $(eval curl -s "\${${apps[$i]}[1]}/download/${req}" | grep -oPm1 "(?<=href=\")https://download.apkcombo.com/.*?(?=\")")\&$(curl -s "https://apkcombo.com/checkin") -O ${apps[$i]}-orig.apk
     java -jar cli-* -b patches-* -m integrations-*$exclude -a ${apps[$i]}-orig.apk -c -o ${apps[$i]}-patched.apk --experimental $($isDroid && echo "--custom-aapt2-binary ./aapt2")
     mv ${apps[$i]}-patched.apk $pwd
 done
