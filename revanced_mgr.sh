@@ -8,7 +8,7 @@ You should have received a copy of the GNU General Public License along with thi
 cli_api="https://api.github.com/repos/revanced/revanced-cli/releases/latest"
 patches_api="https://api.github.com/repos/revanced/revanced-patches/releases/latest"
 integrations_api="https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
-vc=1
+vc=2
 
 apps=("youtube" "music" "twitter" "reddit" "tiktoka" "tiktokg" "spotify" "windyapp" "nyx" "backdrops" "expensemgr" "hexedit" "ticktick" "warnapp" "iconpack" "citra" "myexpenses" "twitch")
 
