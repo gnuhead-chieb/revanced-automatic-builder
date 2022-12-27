@@ -14,54 +14,45 @@ apps=("youtube" "music" "twitter" "reddit" "warnwetter" "ecmwf" "tiktoka" "tikto
 
 youtube=(
     "Youtube"
-    "youtube"
     "https://apkcombo.com/youtube/com.google.android.youtube"
 )
 music=(
     "Youtube Music"
-    "music"
     "https://apkcombo.com/youtube-music/com.google.android.apps.youtube.music"
 )
 twitter=(
     "Twitter"
-    "android"
     "https://apkcombo.com/twitter/com.twitter.android"
 )
 reddit=(
     "Reddit"
-    "frontpage"
     "https://apkcombo.com/reddit/com.reddit.frontpage"
 )
 warnwetter=(
     "WarnWetter"
-    "warnapp"
     "https://apkcombo.com/warnwetter/de.dwd.warnapp"
 )
 ecmwf=(
     "Pflotsh ECMWF"
-    "ecmwf_a"
     "https://apkcombo.com/pflotsh-ecmwf/com.garzotto.pflotsh.ecmwf_a"
 )
 tiktoka=(
     "TikTok(Asia)"
-    "trill"
     "https://apkcombo.com/tiktok-asia/com.ss.android.ugc.trill"
 )
 tiktokg=(
     "Tiktok(Global)"
-    "musically"
     "https://apkcombo.com/tiktok/com.zhiliaoapp.musically"
 )
 spotify=(
     "Spotify"
-    "spotify"
-    "https://apkcombo.com/spotify/com.spotify.music/"
+    "https://apkcombo.com/spotify/com.spotify.music"
 )
 pwd=$(pwd)
 mkdir ~/.revanced &>/dev/null; cd ~/.revanced
 [[ $(uname -a | awk '{print $NF}') = "Android" ]] && isDroid=true || isDroid=false
 function getappver(){
-    local ver=$(eval grep \$\{$1[1]\}<<<"$verlist" | awk '{print $NF}' | grep -vP "[^0-9\.]+" | awk '{if(m<$NF) m=$NF} END{print m}')
+    ver=$(jq -r ".[].compatiblePackages[]|select(.name==\"$(eval echo \${$1[1]} | awk -F/ '{print $NF}')\")|.versions[]" ./patches.json | awk '{if(m<$NF) m=$NF} END{print m}')
     [[ -n "$ver" ]] || ver="all"
     echo $ver
 }
@@ -74,7 +65,12 @@ do
     ls $pkg-$ver &>/dev/null && echo ${pkg^}:updated! || { rm -f $pkg-*; wget "$download" -c -t 15 -O $pkg-$ver; }
 done
 $isDroid && [[ ! -e aapt2 ]] && wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/$(getprop ro.product.cpu.abi)/aapt2
+
+#Check script version
 [[ $(curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/vc) -gt $vc ]] && curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/installer.sh | bash
+
+#Fetch Patches database
+wget https://github.com/revanced/revanced-patches/raw/main/patches.json &>/dev/null
 
 exclude=""
 if [ $# -eq 2 ]; then
@@ -83,7 +79,6 @@ if [ $# -eq 2 ]; then
         exclude=" -e ${excludes//,/ -e }"
     fi
 fi
-verlist=$(java -jar cli-* -c -b patches-* -m integrations-* -a- -o- -l --with-versions --with-packages)
 #List patch available app versions
 {
 opt=0
