@@ -10,7 +10,7 @@ patches_api="https://api.github.com/repos/revanced/revanced-patches/releases/lat
 integrations_api="https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
 vc=1
 
-apps=("youtube" "music" "twitter" "reddit" "warnwetter" "ecmwf" "tiktoka" "tiktokg" "spotify")
+apps=("youtube" "music" "twitter" "reddit" "tiktoka" "tiktokg" "spotify" "windyapp" "nyx" "backdrops" "expensemgr" "hexedit" "ticktick" "warnapp" "iconpack" "citra" "myexpenses" "twitch")
 
 youtube=(
     "Youtube"
@@ -28,14 +28,6 @@ reddit=(
     "Reddit"
     "https://apkcombo.com/reddit/com.reddit.frontpage"
 )
-warnwetter=(
-    "WarnWetter"
-    "https://apkcombo.com/warnwetter/de.dwd.warnapp"
-)
-ecmwf=(
-    "Pflotsh ECMWF"
-    "https://apkcombo.com/pflotsh-ecmwf/com.garzotto.pflotsh.ecmwf_a"
-)
 tiktoka=(
     "TikTok(Asia)"
     "https://apkcombo.com/tiktok-asia/com.ss.android.ugc.trill"
@@ -47,6 +39,50 @@ tiktokg=(
 spotify=(
     "Spotify"
     "https://apkcombo.com/spotify/com.spotify.music"
+)
+windyapp=(
+    "Windy.app"
+    "https://apkcombo.com/windy-app/co.windyapp.android"
+)
+nyx=(
+    "Nyx Music Player"
+    "https://apkcombo.com/nyx-music-player/com.awedea.nyx"
+)
+backdrops=(
+    "Backdrops - Wallpapers"
+    "https://apkcombo.com/backdrops-wallpapers/com.backdrops.wallpapers"
+)
+expensemgr=(
+    "Money Manager"
+    "https://apkcombo.com/money-manager-expense-budget/com.ithebk.expensemanager"
+)
+hexedit=(
+    "HEX Editor"
+    "https://apkcombo.com/hex-editor/com.myprog.hexedit"
+)
+ticktick=(
+    "TickTick"
+    "https://apkcombo.com/ticktick/com.ticktick.task"
+)
+warnapp=(
+    "WarnWetter"
+    "https://apkcombo.com/warnwetter/de.dwd.warnapp"
+)
+iconpack=(
+    "Icon Pack Studio"
+    "https://apkcombo.com/icon-pack-studio/ginlemon.iconpackstudio"
+)
+citra=(
+    "Citra Emulator"
+    "https://apkcombo.com/citra-emulator/org.citra.citra_emu"
+)
+myexpenses=(
+    "My Expenses"
+    "https://apkcombo.com/my-expenses/org.totschnig.myexpenses"
+)
+twitch=(
+    "Twitch"
+    "https://apkcombo.com/twitch/tv.twitch.android.app"
 )
 pwd=$(pwd)
 mkdir ~/.revanced &>/dev/null; cd ~/.revanced
@@ -80,6 +116,7 @@ if [ $# -eq 2 ]; then
     fi
 fi
 #List patch available app versions
+echo -e "Loading apps... \n"
 {
 opt=0
 for pkg in ${apps[@]}
