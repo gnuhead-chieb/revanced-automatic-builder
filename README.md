@@ -12,7 +12,7 @@ It also works on termux.This script is not depend with other project,pure bash s
 ## Get Started/Updating script
 
 ```shell
-curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/installer.sh | bash
+. <(curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/installer.sh)
 revanced
 ```
 You can copy this install snippet on your phone by scanning this QR code.
