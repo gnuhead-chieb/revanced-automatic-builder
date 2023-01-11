@@ -8,7 +8,7 @@ You should have received a copy of the GNU General Public License along with thi
 cli_api="https://api.github.com/repos/revanced/revanced-cli/releases/latest"
 patches_api="https://api.github.com/repos/revanced/revanced-patches/releases/latest"
 integrations_api="https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
-vc=2
+vc=4
 
 apps=("youtube" "music" "twitter" "reddit" "tiktoka" "tiktokg" "spotify" "windyapp" "nyx" "backdrops" "expensemgr" "hexedit" "ticktick" "warnapp" "iconpack" "citra" "myexpenses" "twitch")
 
@@ -93,17 +93,22 @@ function getappver(){
     echo $ver
 }
 
+#Check script version
+[[ $(curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/vc) -gt $vc ]] && {
+. <(curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/installer.sh)
+echo "Script updated!, please run again!"
+exit
+}
+
 ##Check version and download revanced packages
 for pkg in cli patches integrations
 do
     ver=$(eval curl -s '$'${pkg}_api  | jq -r ".name")
     download=$(eval curl -s '$'${pkg}_api  | jq -r ".assets[-1].browser_download_url")
+    [[ $ver == "null" ]] && { echo "${pkg^}:API Error"; continue; }
     ls $pkg-$ver &>/dev/null && echo ${pkg^}:updated! || { rm -f $pkg-*; wget "$download" -c -t 15 -O $pkg-$ver; }
 done
 $isDroid && [[ ! -e aapt2 ]] && wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/$(getprop ro.product.cpu.abi)/aapt2
-
-#Check script version
-[[ $(curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/vc) -gt $vc ]] && curl -fsSL https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/main/installer.sh | bash
 
 #Fetch Patches database
 wget https://github.com/revanced/revanced-patches/raw/main/patches.json &>/dev/null
