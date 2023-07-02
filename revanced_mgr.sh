@@ -8,7 +8,7 @@ You should have received a copy of the GNU General Public License along with thi
 cli_api="https://api.github.com/repos/revanced/revanced-cli/releases/latest"
 patches_api="https://api.github.com/repos/revanced/revanced-patches/releases/latest"
 integrations_api="https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
-vc=4
+vc=5
 
 apps=("youtube" "music" "twitter" "reddit" "tiktoka" "tiktokg" "spotify" "windyapp" "nyx" "backdrops" "expensemgr" "hexedit" "ticktick" "warnapp" "iconpack" "citra" "myexpenses" "twitch")
 
@@ -88,7 +88,7 @@ pwd=$(pwd)
 mkdir ~/.revanced &>/dev/null; cd ~/.revanced
 [[ $(uname -a | awk '{print $NF}') = "Android" ]] && isDroid=true || isDroid=false
 function getappver(){
-    ver=$(jq -r ".[].compatiblePackages[]|select(.name==\"$(eval echo \${$1[1]} | awk -F/ '{print $NF}')\")|.versions[]" ./patches.json | awk '{if(m<$NF) m=$NF} END{print m}')
+    ver=$(jq -r ".[].compatiblePackages[]|select(.name==\"$(eval echo \${$1[1]} | awk -F/ '{print $NF}')\")|.versions[]" ./patches | awk '{if(m<$NF) m=$NF} END{print m}')
     [[ -n "$ver" ]] || ver="all"
     echo $ver
 }
@@ -111,7 +111,7 @@ done
 $isDroid && [[ ! -e aapt2 ]] && wget https://github.com/gnuhead-chieb/revanced-automatic-builder/raw/aapt2/$(getprop ro.product.cpu.abi)/aapt2
 
 #Fetch Patches database
-wget https://github.com/revanced/revanced-patches/raw/main/patches.json &>/dev/null
+wget https://releases.revanced.app/patches &>/dev/null
 
 exclude=""
 if [ $# -eq 2 ]; then
